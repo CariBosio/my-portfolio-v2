@@ -1,0 +1,195 @@
+/* --- NAVBAR FIXED --- */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 3vw;
+  /* z-index MUY ALTO para estar siempre sobre el menú overlay */
+  z-index: 200; 
+  box-sizing: border-box;
+  pointer-events: none; /* Dejamos pasar clicks a menos que toquen un link */
+
+  animation: fadeInNavbar 2s ease-out forwards;
+  opacity: 0; 
+  
+  
+
+  .navbar-logo-placeholder {
+    width: 100px;     
+  }
+
+  .nav-controls {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 200px;
+    pointer-events: auto; /* Reactivamos clicks aquí */
+  }
+
+  .navbar-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-color);
+      position: relative;
+      transition: color 0.3s ease;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0%;
+        height: 1px;
+        background-color: var(--accent-color);
+        transition: width 0.3s ease;
+      }
+
+      &:hover {
+        color: var(--accent-color);
+        &::after { width: 100%; }
+      }
+    }
+  }
+
+  /* HAMBURGUESA */
+  .hamburger-btn {
+    position: absolute;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 9px; /* Separación un poco mayor para que la X quede bien */
+    
+    opacity: 0;
+    visibility: hidden; 
+    /* pointer-events se maneja con GSAP */
+
+    .line {
+      height: 3px;
+      background-color: var(--text-color);
+      transform-origin: center; /* Importante para que rote sobre su centro */
+    }
+
+    .line-1 { width: 30px; }
+    .line-2 { width: 20px; }
+
+    &:hover {
+      .line-1, .line-2 { background-color: var(--accent-color); }
+    }
+  }
+}
+
+/* --- MENÚ OVERLAY FULL SCREEN --- */
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #0a0a0a; /* Un negro apenas distinto al fondo */
+  z-index: 150; /* Debajo del Navbar (200) pero encima del sitio */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  /* Inicialmente oculto (GSAP lo maneja con autoAlpha) */
+  opacity: 0;
+  visibility: hidden;
+
+  .menu-content {
+    /* 1. Ajustamos el ancho al contenido para poder centrarlo en bloque */
+    width: fit-content;
+    
+    /* 2. Compensación Óptica */
+    /* Como los números salen 80px a la izquierda, empujamos la caja 
+       unos 40px o 50px a la derecha para equilibrar el "centro visual" */
+    margin-left: 50px;
+    ul {
+      display: flex;
+      flex-direction: column;
+      /* 3. ALINEACIÓN IZQUIERDA ESTRICTA */
+      /* Esto hace que 'Inicio' y 'Proyectos' empiecen en la misma línea vertical,
+         creando esa "columna vertebral" sólida */
+      align-items: flex-start;
+    }
+
+    .menu-link-item {
+     font-family: var(--font-serif);
+      font-size: clamp(2rem, 1.538rem + 2.05vw, 4rem); /* Texto principal grande */
+      font-weight: 700;
+      color: var(--text-color);
+      cursor: pointer;
+      margin-bottom: 40px; /* Más espacio entre items porque los números son grandes */
+      
+      /* IMPORTANTE: Para que el número absoluto se posicione respecto a esto */
+      position: relative; 
+      z-index: 1; /* Contexto de apilamiento */
+      
+      /* Quitamos flex y gap porque ahora van superpuestos */
+      display: block; 
+      
+      transition: transform 0.3s ease;
+
+      /* EL NÚMERO GIGANTE DE FONDO */
+
+      .number {
+        position: absolute;
+        top: 50%; /* Centrado verticalmente */
+        left: clamp(-130px, calc(-68.46px - 3.21vw), -80px); /* Lo tiramos un poco a la izquierda para que asome */
+        transform: translateY(-50%); /* Corrección del centro vertical */
+        
+        font-family: var(--font-sans); /* Contraste: Sans vs Serif */
+        font-size: clamp(6rem, 5.077rem + 4.1vw, 10rem); /* ¡GIGANTE! Ajusta a tu gusto */
+        font-weight: 800; /* Bien gordo */
+        
+        /* El efecto fantasma */
+        color: transparent; 
+        -webkit-text-stroke: 2px rgb(from var(--accent-color) r g b / 0.3); /* Solo borde sutil (opcional) */
+        /* O SI PREFIERES RELLENO: */
+        color: rgb(from var(--accent-color) r g b / 0.1);
+        
+        z-index: -1; /* Se va detrás del texto */
+        pointer-events: none; /* Que no moleste al click */
+        transition: all 0.5s ease;
+      }
+
+      &:hover {
+        color: var(--accent-color);
+        transform: translateX(10px); /* Pequeño movimiento a la derecha */
+
+        .number {
+           color: rgba(255, 255, 255, 0.05); /* Blanco al 5% de opacidad */
+        
+          -webkit-text-stroke: 2px rgba(255, 255, 255, 0.3); /* Solo borde sutil (opcional) */
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeInNavbar {
+  0% { opacity: 0; }
+  50% { opacity: 0; } 
+  100% { opacity: 1; }
+}

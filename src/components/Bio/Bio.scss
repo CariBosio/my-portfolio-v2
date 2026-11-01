@@ -1,0 +1,192 @@
+.bio-section {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  padding-block: 150px;
+  background-color: var(--bg-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  /* Variables */
+  --active-color: #fff1f1; 
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  transition: all 0.5s ease;
+
+  &.psych { --active-color: #f83b3b; }
+
+  /* --- HEADER CON BLOCK REVEAL --- */
+  .bio-header {
+    text-align: center;
+    margin-bottom: 80px;
+    width: 100%;
+    
+    .quote-container {
+      font-family: var(--font-sans); /* Fuente base */
+      font-size: clamp(2.2rem, 5vw, 4.5rem);
+      font-weight: 300;
+      line-height: 1.4; /* Importante: buen espaciado entre líneas para las máscaras */
+      color: #ffffff;
+
+      .highlight {
+    color: #f83b3b;
+    font-family: var(--font-serif);
+    font-weight: 400;
+  }
+      
+      .line-wrapper {
+        position: relative;
+        display: inline-block;
+        padding-right: 10px; /* Un poco de aire extra a la derecha */
+        vertical-align: top;
+      }
+
+      .line-mask {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #f83b3b; /* Color Rojo por defecto */
+        z-index: 10;
+        transform: scaleX(0); /* Empieza invisible */
+        /* JS controlará el transform-origin */
+      }
+    }
+  }
+
+  /* ... El resto del CSS (Switch, Cards, Mobile) sigue igual ... */
+  /* --- 2. SWITCH --- */
+  .switch-wrapper {
+    margin-bottom: 60px;
+    z-index: 10;
+  }
+  
+  /* (Copia el resto del archivo anterior para switch y cards) */
+.switch-track {
+  position: relative;
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 60px;
+  padding: 5px;
+  width: fit-content; /* O un ancho fijo si prefieres */
+  min-width: 300px; /* Asegura un ancho mínimo para que respire */
+  margin: 0 auto; /* Centrado horizontalmente */
+}
+ /* El botón ya no depende del padding lateral para su ancho */
+.switch-btn {
+    all: unset;
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  border: none;
+  
+  /* --- CAMBIOS CLAVE AQUÍ --- */
+  flex: 1;          /* 1. Obliga a ambos botones a crecer igual */
+  width: 50%;       /* 2. Asegura la base del 50% */
+  padding: 15px 0;  /* 3. Quitamos padding lateral, dejamos solo vertical */
+  display: flex;    /* 4. Flexbox interno para centrar el texto */
+  justify-content: center;
+  align-items: center;
+  /* -------------------------- */
+
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.3s ease;
+
+  &.active { color: #0b0b0b; }
+  &:hover:not(.active) { color: #fff; }
+}
+
+ .switch-glider {
+  position: absolute;
+  top: 5px; 
+  bottom: 5px; 
+  left: 5px;
+  
+  /* El cálculo matemático es correcto si los botones son del 50% exacto */
+  width: calc(50% - 5px); 
+  
+  background-color: var(--active-color);
+  border-radius: 50px;
+  z-index: 1;
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), background-color 0.4s ease;
+}
+
+  &.psych .switch-glider {
+    transform: translateX(100%);
+    }
+  
+  .bio-content {
+      max-width: 900px;
+      text-align: center;
+      width: 100%;
+  }
+  
+  .bio-card {
+    .card-title {
+      font-family: var(--font-sans);
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin: 0;
+    }
+    .card-subtitle {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.5rem;
+      color: var(--active-color);
+      display: block;
+      margin-top: 10px;
+    }
+    .card-text {
+      font-family: var(--font-sans);
+      font-size: 1.25rem;
+      line-height: 1.7;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 50px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .tags-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      
+      .tag {
+        border-width: 1px;
+        border-style: solid;
+        padding: 10px 25px;
+        border-radius: 100px;
+        font-family: var(--font-sans);
+        font-size: 0.85rem;
+        background: transparent;
+        opacity: 0.8;
+        transition: transform 0.3s ease;
+        
+        &:hover {
+          transform: translateY(-3px);
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 100px 5%;
+    .quote-container { font-size: 1.8rem !important; }
+    .card-title { font-size: 2rem !important; }
+    .switch-btn { padding: 12px 20px; font-size: 0.8rem; }
+  }
+}

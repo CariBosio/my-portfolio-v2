@@ -1,0 +1,215 @@
+.projects-section {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* La altura real la maneja el 'pin' de GSAP */
+  overflow: visible;
+  background-color: var(--bg-color); /* Tu color de fondo */
+
+      // background-image:
+      //     radial-gradient(circle at 50% 100%, var(--accent-color) 0%, transparent 60%),
+      //     // radial-gradient(circle at 50% 100%, rgba(255, 140, 0, 0.4) 0%, transparent 70%),
+      //     radial-gradient(circle at 50% 100%, var(--bg-color) 0%, transparent 80%);
+      //     opacity: 0.9;
+
+
+  color: var(--light-color);
+  font-family: var(--font-sans); /* Usamos tu fuente del proyecto */
+
+
+.section-glow-bridge {
+    position: absolute;
+    bottom: 0; // Se pega justo al final de Projects
+    left: 50%;
+    transform: translate(-50%, 50%); // Mitad arriba (Projects), mitad abajo (Contact)
+    
+    // Usamos vmax para que el tamaño sea consistente en cualquier monitor
+    width: 60vmax; 
+    height: 60vmax;
+    background: radial-gradient(
+      circle, 
+      var(--accent-color) 0%, 
+      transparent 80%
+    );
+    
+    border-radius: 50%;
+    filter: blur(200px); // Suaviza el borde para que parezca luz real
+    opacity: 0.8;
+    z-index: 1; // Por detrás de las cards
+    pointer-events: none;
+  }
+
+
+  /* HEADER */
+  .sticky-header {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    // transform: translate(-50%, -50%);
+    z-index: 0;
+
+    h1 {
+      font-size: 20vw;
+      font-weight: lighter;
+      color: var(--light-color);
+      text-align: center;
+      // -webkit-text-stroke: 2px var(--light-color);
+      font-family: var(--font-serif); /* Tu fuente elegante */
+      white-space: nowrap;
+    }
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    position: absolute;
+    top: 31%;
+    left: 10px;
+    width: 8px;
+    height: 40%;
+    background-color: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    z-index: 9999;
+    pointer-events: auto;
+    // border: 2px solid green;
+    border-radius: 5px;
+    overflow: hidden;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+       border-radius: 25px;
+      /* Degradado para suavizar los bordes de la barra */
+      background: linear-gradient(
+        180deg,
+        #0b0b0b 0%,
+        rgba(0, 0, 0, 0) 10%,
+        rgba(0, 0, 0, 0) 90%,
+        #0b0b0b 100%
+      );
+    }
+
+    .progress {
+      width: 100%;
+      height: 0%;
+      background-color: #353531;
+    }
+  }
+
+  /* INDICES LATERALES */
+  .indices {
+    position: absolute;
+    top: 0;
+    left: 30px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1em;
+    opacity: 0;
+    z-index: 9999;
+    pointer-events: auto;
+
+    .index {
+      text-align: left;
+      opacity: 0.25;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: translateX(5px);
+      }
+
+      p {
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+        &.icon {
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+
+  /* CARDS */
+  .card {
+    position: absolute;
+    top: 150%; /* Empieza fuera */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    border-radius: 1em;
+    will-change: transform, top;
+    overflow: hidden;
+    z-index: 2;
+    pointer-events: none; /* Importante para que no bloquee scroll */
+
+    .card-phase {
+      position: absolute;
+      top: 1em;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.25em 0.5em;
+      border-radius: 0.25em;
+      color: #000;
+      font-weight: bold;
+      p {
+        font-size: 1.2rem;
+        margin: 0;
+      }
+    }
+
+    .card-title {
+      text-align: center;
+      p {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: inherit;
+      }
+      h1 {
+        font-size: 4rem;
+        font-weight: lighter;
+        line-height: 1;
+        font-family: var(--font-serif);
+
+        span {
+          display: block;
+          color: transparent;
+          -webkit-text-stroke: 1px #fff;
+        }
+      }
+    }
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .projects-section {
+    .card {
+      width: 80%;
+      height: 45%;
+    }
+    .sticky-header h1 {
+      font-size: 15vw;
+    }
+    .card-title h1 {
+      font-size: 2.5rem;
+    }
+    .indices {
+      left: 10px; /* CAMBIO: Aseguramos que en móvil también esté a la izquierda */
+      right: auto; /* Reseteamos el right por si acaso */
+      gap: 2em;
+
+      /* Ocultamos detalles en movil para no saturar */
+      .index p:not(.icon) {
+        display: none;
+      }
+    }
+  }
+}

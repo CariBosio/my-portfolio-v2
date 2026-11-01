@@ -1,0 +1,208 @@
+.hero-section {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding-left: 8%;
+  overflow: hidden;
+  background-color: var(--bg-color);
+
+  /* --- CAPA 1: PARTÍCULAS (FONDO) --- */
+  .particles-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Al fondo */
+    pointer-events: auto; /* Interactúa con el mouse */
+    opacity: 0;
+  }
+
+  /* --- CAPA 2: FOTO VERTICAL --- */
+  .hero-image-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0%;
+    height: 100%;
+    z-index: 2; /* Encima de partículas */
+    pointer-events: none; /* Deja pasar el mouse hacia las partículas */
+    overflow: hidden;
+
+    /* Máscara de desvanecido hacia el negro */
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 30%);
+    mask-image: linear-gradient(to right, transparent 0%, black 30%);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      /* Foco arriba para ver la cara y el cuerpo hacia abajo */
+      object-position: center top;
+
+      filter: grayscale(100%) contrast(1.1);
+      opacity: 0.9;
+      /* ESCALA INICIAL: Un poco grande para hacer zoom-out al entrar */
+      transform: scale(1.3);
+    }
+  }
+
+  /* --- CAPA 3: TEXTO (FRENTE) --- */
+  .hero-content {
+    position: relative;
+    z-index: 10; /* Muy por encima */
+    text-align: left;
+    max-width: 800px;
+
+    /* LOS WRAPPERS SON CLAVE PARA EL EFECTO "SPLIT/REVEAL" */
+    .title-wrapper,
+    .subtitle-wrapper {
+      overflow: hidden; /* Esconden lo que esté fuera de su caja */
+      position: relative;
+    //   border: 1px solid red;
+    }
+
+    .title-wrapper {
+      margin-bottom: 10px;
+    }
+    .subtitle-wrapper {
+      margin-top: 20px;
+      margin-left: 10px;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0;
+      color: var(--text-color);
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+      //   transform: translateY(110%);
+      opacity: 1; /* La opacidad la manejamos con el wrapper, pero dejémosla en 1 */
+    }
+
+    p {
+      font-family: var(--font-sans);
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      font-weight: 600;
+      color: var(--accent-color);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin: 0;
+      //   transform: translateY(150%);
+      opacity: 1; /* El subtítulo sí puede usar opacidad */
+    }
+  }
+
+  /* --- SCROLL INDICATOR (FRENTE) --- */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 20;
+
+    span {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .mouse {
+      width: 30px;
+      height: 50px;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-radius: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding-top: 5px;
+
+      .chevron {
+        width: 6px;
+        height: 6px;
+        border-right: 2px solid var(--accent-color);
+        border-bottom: 2px solid var(--accent-color);
+        transform: rotate(45deg);
+        opacity: 0;
+        animation: wheel-flow 1.5s infinite;
+        z-index: 20;
+      }
+
+      .chevron:nth-child(1) {
+        animation-delay: 0s;
+      }
+      .chevron:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+      .chevron:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+    }
+  }
+
+  /* --- RESPONSIVE (MÓVIL) --- */
+  @media (max-width: 768px) {
+    align-items: center;
+    padding-left: 0;
+
+    .hero-image-container {
+      width: 100%;
+      height: 60%;
+      top: 0;
+      right: auto;
+
+      -webkit-mask-image: linear-gradient(
+        to bottom,
+        black 40%,
+        transparent 100%
+      );
+      mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+
+      img {
+        object-position: center top;
+      }
+    }
+
+    .hero-content {
+      text-align: center;
+      margin-top: 35vh;
+
+      h1 {
+        white-space: normal;
+        font-size: 3.5rem;
+      }
+    }
+  }
+}
+
+@keyframes wheel-flow {
+  0% {
+    opacity: 0;
+    transform: rotate(45deg) translate(-5px, -5px);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(45deg) translate(0px, 0px);
+  }
+}

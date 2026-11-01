@@ -1,0 +1,59 @@
+.marquee-section {
+  // width: 100%; /* Empieza al 100% */
+  // max-width: 1400px; /* Opcional: Tope máximo en pantallas gigantes */
+  margin: 0 auto; /* CRÍTICO: Para que al achicarse quede centrado */
+  
+  padding: 80px 0;
+  background-color: #121212;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  
+  /* Para que la animación de ancho sea suave */
+  will-change: width, border-radius; 
+
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 20%,
+    black 80%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 20%,
+    black 80%,
+    transparent
+  );
+}
+
+.marquee-track {
+  width: 100%;
+  overflow: hidden;
+  }
+
+.marquee-content {
+  display: flex;
+  white-space: nowrap;
+  width: max-content;
+  
+  span {
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, -0.615rem + 7.18vw, 8rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #ffffff;
+    padding-top:0.1em ;
+    padding-right: 0.5em;
+    will-change: transform;
+    line-height: 1;
+  }
+
+  &.outline-text span {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--accent-color);
+    transition: color 0.3s ease;
+  }
+}
