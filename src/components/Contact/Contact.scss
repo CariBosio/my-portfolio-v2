@@ -116,12 +116,13 @@
     width: 100lvw;
     height: 100lvh;
     z-index: 9999; /* Por encima de todo */
+    margin-top: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     pointer-events: none; /* Invisible al principio */ /* El fondo lo da el .expander-overlay que se agrandó */
-
+ 
     .links-container {
       grid-column-gap: 1rem;
       grid-row-gap: 1rem;
@@ -149,11 +150,11 @@
           Mona Sans Variable,
           Arial,
           sans-serif;
-        font-size: clamp(2rem, 1.308rem + 3.08vw, 5rem);
+        font-size: clamp(1.5rem, 0.808rem + 3.08vw, 4.5rem);
         font-variation-settings: "wdth" 86;
         text-transform: uppercase;
         font-weight: 800;
-        line-height: 1;
+        line-height: 1.1;
         color: var(--light-color);
       }
 
@@ -193,7 +194,7 @@
         background: none;
         border: none;
         font-family: var(--font-sans);
-        font-size: 1rem; /* Un poco más discreto que los links gigantes */
+        font-size: 0.5rem; /* Un poco más discreto que los links gigantes */
         text-transform: uppercase;
         letter-spacing: 2px; /* Queda muy elegante con espacio */
         color: #fff; /* O el color que estés usando de contraste */

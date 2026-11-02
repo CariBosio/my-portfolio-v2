@@ -1,16 +1,17 @@
+// src/components/Contact/Contact.jsx
 import React, { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLanguage } from "../../context/useLanguage";
 import "./Contact.scss";
 
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Sub-componente para animar el texto de forma individual
- * Mantiene el estilo "big-link" pero añade el efecto hover.
+ * Sub-componente para animar el texto de forma individual con efecto hover.
  */
-const WavyLink = ({ href, text, index, addRef, download }) => {
+const WavyLink = ({ href, text, index, addRef }) => {
   const linkRef = useRef(null);
 
   useGSAP(
@@ -52,7 +53,7 @@ const WavyLink = ({ href, text, index, addRef, download }) => {
         el.removeEventListener("mouseleave", leave);
       };
     },
-    { scope: linkRef },
+    { scope: linkRef, dependencies: [text] },
   );
 
   return (
@@ -60,7 +61,6 @@ const WavyLink = ({ href, text, index, addRef, download }) => {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      // download={download}
       className="big-link wavy-link"
       ref={(el) => {
         linkRef.current = el;
@@ -95,11 +95,12 @@ const WavyLink = ({ href, text, index, addRef, download }) => {
 };
 
 const Contact = ({ lenis }) => {
+  const { t } = useLanguage();
+
   const containerRef = useRef(null);
   const titleRef = useRef(null);
   const btnRef = useRef(null);
   const btnTextRef = useRef(null);
-  const footerRef = useRef(null);
 
   const expanderRef = useRef(null);
   const overlayRef = useRef(null);
@@ -129,13 +130,13 @@ const Contact = ({ lenis }) => {
     }
   }, [isExpanded, lenis]);
 
-useGSAP(
+  useGSAP(
     () => {
       // 1. Timeline de entrada (Scroll)
       const tlEntry = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
-          start: "top 70%", 
+          start: "top 70%",
           toggleActions: "play none none reverse",
         },
       });
@@ -151,33 +152,33 @@ useGSAP(
         })
         .from(
           btnRef.current,
-          { 
-            scale: 0, 
-            opacity: 0, 
-            duration: 1, 
-            ease: "elastic.out(1, 0.5)" 
+          {
+            scale: 0,
+            opacity: 0,
+            duration: 1,
+            ease: "elastic.out(1, 0.5)",
           },
-          "-=0.7"
+          "-=0.7",
         )
-        // CORRECCIÓN: Usamos fromTo para ignorar el opacity: 0 del CSS al final
         .fromTo(
           microFooterRef.current,
-          { opacity: 0 }, // Inicio
-          { 
-            opacity: 0.4,    // Fin (Forzamos que aparezca)
-            duration: 1.2, 
-            ease: "power2.inOut" 
+          { opacity: 0 },
+          {
+            opacity: 0.4,
+            duration: 1.2,
+            ease: "power2.inOut",
           },
-          ">+=0.2" // Entra al final con un pequeño delay
+          ">+=0.2",
         );
 
-        const footer = microFooterRef.current;
-      
-      const onMouseEnter = () => gsap.to(footer, { opacity: 1, duration: 0.3 });
-      const onMouseLeave = () => gsap.to(footer, { opacity: 0.4, duration: 0.3 });
+      const footer = microFooterRef.current;
+      if (footer) {
+        const onMouseEnter = () => gsap.to(footer, { opacity: 1, duration: 0.3 });
+        const onMouseLeave = () => gsap.to(footer, { opacity: 0.4, duration: 0.3 });
 
-      footer.addEventListener("mouseenter", onMouseEnter);
-      footer.addEventListener("mouseleave", onMouseLeave);
+        footer.addEventListener("mouseenter", onMouseEnter);
+        footer.addEventListener("mouseleave", onMouseLeave);
+      }
 
       // 2. Timeline de expansión (Click)
       tlExpand.current = gsap.timeline({
@@ -196,8 +197,6 @@ useGSAP(
           strokeDashoffset: 30,
         })
         .set(closeBtnRef.current, { autoAlpha: 1 })
-        
-        // Aquí ocultamos todo cuando se expande el overlay
         .to([titleRef.current, microFooterRef.current], {
           y: -50,
           opacity: 0,
@@ -208,7 +207,7 @@ useGSAP(
         .to(
           btnRef.current,
           { autoAlpha: 0, scale: 0.5, y: -50, duration: 0.4, ease: "power2.in" },
-          "<"
+          "<",
         )
         .to(
           expanderRef.current,
@@ -243,42 +242,39 @@ useGSAP(
           "-=0.1",
         );
 
-        const wrapper = easterEggRef.current;
+      const wrapper = easterEggRef.current;
       if (!wrapper) return;
 
       const onEggEnter = () => {
         gsap.to(wrapper, {
-          y: -20,            // Sube al slogan
-          skewY: -2,         // Se inclina hacia arriba por la "velocidad"
+          y: -20,
+          skewY: -2,
           duration: 0.6,
           ease: "power4.out",
-          onComplete: () => gsap.to(wrapper, { skewY: 0, duration: 0.3 }) // Vuelve a la normalidad
+          onComplete: () => gsap.to(wrapper, { skewY: 0, duration: 0.3 }),
         });
       };
 
       const onEggLeave = () => {
         gsap.to(wrapper, {
-          y: 0,              // Baja a la localización
-          skewY: 2,          // Se inclina hacia abajo
+          y: 0,
+          skewY: 2,
           duration: 0.6,
           ease: "power4.out",
-          onComplete: () => gsap.to(wrapper, { skewY: 0, duration: 0.3 })
+          onComplete: () => gsap.to(wrapper, { skewY: 0, duration: 0.3 }),
         });
       };
 
-      // Buscamos el padre (footer-center) para que el área de interacción sea cómoda
-      const parent = wrapper.closest('.footer-center');
-      parent.addEventListener("mouseenter", onEggEnter);
-      parent.addEventListener("mouseleave", onEggLeave);
-
-      return () => {
-        parent.removeEventListener("mouseenter", onEggEnter);
-        parent.removeEventListener("mouseleave", onEggLeave);
-      };
+      const parent = wrapper.closest(".footer-center");
+      if (parent) {
+        parent.addEventListener("mouseenter", onEggEnter);
+        parent.addEventListener("mouseleave", onEggLeave);
+      }
     },
     { scope: containerRef },
   );
 
+  // Efecto magnético del botón
   useEffect(() => {
     if (isExpanded) return;
     const btn = btnRef.current;
@@ -304,6 +300,7 @@ useGSAP(
         ease: "power3.out",
       });
     };
+
     const resetButton = () => {
       gsap.to([btn, expander, text], {
         x: 0,
@@ -313,6 +310,7 @@ useGSAP(
         ease: "elastic.out(1, 0.4)",
       });
     };
+
     btn.addEventListener("mousemove", moveButton);
     btn.addEventListener("mouseleave", resetButton);
     return () => {
@@ -328,6 +326,7 @@ useGSAP(
       ease: "back.out(1.7)",
     });
   };
+
   const handleCloseHoverOut = () => {
     gsap.to(closeBtnRef.current, {
       rotation: 0,
@@ -335,24 +334,31 @@ useGSAP(
       ease: "power2.out",
     });
   };
+
   const handleExpandClick = () => {
     setIsExpanded(true);
     tlExpand.current.play();
   };
+
   const handleCloseClick = () => {
     tlExpand.current.reverse();
   };
 
+  // Enlaces dinámicos según idioma
   const linksData = [
-    { text: "Email", href: "mailto:caribosio72@gmail.com" },
+    { text: t.contact.links.email, href: "mailto:caribosio72@gmail.com" },
     {
-      text: "LinkedIn",
+      text: t.contact.links.linkedin,
       href: "https://www.linkedin.com/in/carina-susana-bosio-73621215b/",
     },
-    { text: "GitHub", href: "https://github.com/CariBosio" },
-    { text: "CodePen", href: "https://codepen.io/CariBosio" },
-    { text: "WhatsApp", href: "https://wa.me/5493512322922" },
-    { text: "Resume", href: "/CARINA BOSIO - CV - 2026.pdf", isView: true },
+    { text: t.contact.links.github, href: "https://github.com/CariBosio" },
+    { text: t.contact.links.codepen, href: "https://codepen.io/CariBosio" },
+    { text: t.contact.links.whatsapp, href: "https://wa.me/5493512322922" },
+    {
+      text: t.contact.links.resume,
+      href: "/CARINA BOSIO - CV - 2026.pdf",
+      isView: true,
+    },
   ];
 
   return (
@@ -360,13 +366,13 @@ useGSAP(
       <div className="contact-content">
         <div className="title-container" ref={titleRef}>
           <div className="mask">
-            <h2 className="contact-title-line">Let’s start</h2>
+            <h2 className="contact-title-line">{t.contact.titleLine1}</h2>
           </div>
           <div className="mask">
-            <h2 className="contact-title-line">a project</h2>
+            <h2 className="contact-title-line">{t.contact.titleLine2}</h2>
           </div>
           <div className="mask">
-            <h2 className="contact-title-line">together</h2>
+            <h2 className="contact-title-line">{t.contact.titleLine3}</h2>
           </div>
         </div>
         <div className="btn-wrapper">
@@ -376,12 +382,17 @@ useGSAP(
             ref={btnRef}
             onClick={handleExpandClick}
           >
-            <span ref={btnTextRef}>Get in touch</span>
+            <span ref={btnTextRef}>{t.contact.cta}</span>
           </div>
         </div>
       </div>
 
-      <div className="contact-links-overlay" ref={overlayRef}>
+      <div className="contact-links-overlay" ref={overlayRef}
+      style={{ 
+    pointerEvents: isExpanded ? "all" : "none",
+    visibility: isExpanded ? "visible" : "hidden" // <-- Evita que se vea si no está abierto
+  }}
+      >
         <div className="links-container">
           {linksData.map((link, i) => (
             <WavyLink
@@ -390,7 +401,6 @@ useGSAP(
               text={link.text}
               href={link.href}
               addRef={addToLinksRef}
-              download={link.isDownload ? "CV_Carina_Bosio.pdf" : undefined}
             />
           ))}
 
@@ -439,14 +449,14 @@ useGSAP(
         <div className="footer-left">
           <p>© 2026 Carina Bosio</p>
         </div>
-        <div className="footer-center" onMouseEnter={() => {}}>
+        <div className="footer-center">
           <div className="easter-egg-wrapper" ref={easterEggRef}>
             <p className="location-text">
               <span className="dot">•</span>
-              Based in Argentina
+              {t.contact.based}
               <span className="dot">•</span>
             </p>
-            <p className="slogan-text">Logic for machines, empathy for users</p>
+            <p className="slogan-text">{t.contact.tagline}</p>
           </div>
         </div>
         <div className="footer-right">
@@ -472,7 +482,7 @@ useGSAP(
             rel="noreferrer"
             className="cv-link"
           >
-            Resume
+            {t.contact.resume}
           </a>
         </div>
       </footer>
