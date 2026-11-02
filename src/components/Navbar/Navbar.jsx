@@ -1,10 +1,10 @@
-import React, { useLayoutEffect, useRef, useState, useEffect } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
-import LanguageToggle from '../LanguageToggle/LanguageToggle';
-import { useLanguage } from '../../context/useLanguage';
-import './Navbar.scss';
+import React, { useLayoutEffect, useRef, useState, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import LanguageToggle from "../LanguageToggle/LanguageToggle";
+import { useLanguage } from "../../context/useLanguage";
+import "./Navbar.scss";
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
@@ -14,10 +14,10 @@ const Navbar = ({ startAnimation, lenis }) => {
   const linksRef = useRef(null);
   const burgerRef = useRef(null);
   const menuRef = useRef(null);
-  
+
   // Ref para guardar la Línea de Tiempo del Menú
-  const menuTl = useRef(null); 
-  
+  const menuTl = useRef(null);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const line1Ref = useRef(null);
   const line2Ref = useRef(null);
@@ -27,14 +27,14 @@ const Navbar = ({ startAnimation, lenis }) => {
       gsap.fromTo(
         navRef.current,
         { y: -30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }
+        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
       );
     }
   }, [startAnimation]);
 
   const scrollToSection = (id) => {
     setIsMenuOpen(false); // Esto disparará el .reverse() automáticamente
-    
+
     if (lenis) {
       lenis.scrollTo(`#${id}`, {
         offset: 0,
@@ -43,7 +43,7 @@ const Navbar = ({ startAnimation, lenis }) => {
       });
     } else {
       const element = document.getElementById(id);
-      if (element) element.scrollIntoView({ behavior: 'smooth' });
+      if (element) element.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -54,23 +54,39 @@ const Navbar = ({ startAnimation, lenis }) => {
   // --- 1. CONFIGURACIÓN MAESTRA DEL MENÚ (SE CREA UNA VEZ) ---
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      menuTl.current = gsap.timeline({ paused: true })
+      menuTl.current = gsap
+        .timeline({ paused: true })
         // A. Fondo Negro (Overlay)
-        .to(menuRef.current, { 
-          autoAlpha: 1, 
-          duration: 0.6, 
-          ease: "power3.inOut" 
+        .to(menuRef.current, {
+          autoAlpha: 1,
+          duration: 0.6,
+          ease: "power3.inOut",
         })
-        
+
         // B. Transformación Hamburguesa -> X
-        .to(line1Ref.current, { rotation: 45, y: 6, duration: 0.4, ease: "back.out(1.7)" }, 0)
-        .to(line2Ref.current, { rotation: -45, y: -6, width: '30px', duration: 0.4, ease: "back.out(1.7)" }, 0)
+        .to(
+          line1Ref.current,
+          { rotation: 45, y: 6, duration: 0.4, ease: "back.out(1.7)" },
+          0,
+        )
+        .to(
+          line2Ref.current,
+          {
+            rotation: -45,
+            y: -6,
+            width: "30px",
+            duration: 0.4,
+            ease: "back.out(1.7)",
+          },
+          0,
+        )
 
         // C. Los Links aparecen (Stagger)
-        .fromTo(".menu-link-item", 
+        .fromTo(
+          ".menu-link-item",
           { y: 50, opacity: 0 },
           { y: 0, opacity: 1, stagger: 0.1, duration: 0.5, ease: "power2.out" },
-          "-=0.3"
+          "-=0.3",
         );
     }, navRef);
 
@@ -92,46 +108,62 @@ const Navbar = ({ startAnimation, lenis }) => {
   useLayoutEffect(() => {
     const mm = gsap.matchMedia();
 
-    mm.add({
-      isMobile: "(max-width: 900px)",
-      isDesktop: "(min-width: 901px)"
-    }, (context) => {
-      let { isMobile } = context.conditions;
+    mm.add(
+      {
+        isMobile: "(max-width: 900px)",
+        isDesktop: "(min-width: 901px)",
+      },
+      (context) => {
+        let { isMobile } = context.conditions;
 
-      if (isMobile) {
-        gsap.set(linksRef.current, { autoAlpha: 0, display: 'none' });
-        gsap.set(burgerRef.current, { autoAlpha: 1, x: 0, rotation: 0, pointerEvents: "auto" });
-      } else {
-        gsap.set(linksRef.current, { autoAlpha: 1, display: 'flex', x: 0 });
-        gsap.set(burgerRef.current, { autoAlpha: 0, x: 20, rotation: -90, pointerEvents: "none" });
+        if (isMobile) {
+          gsap.set(linksRef.current, { autoAlpha: 0, display: "none" });
+          gsap.set(burgerRef.current, {
+            autoAlpha: 1,
+            x: 0,
+            rotation: 0,
+            pointerEvents: "auto",
+          });
+        } else {
+          gsap.set(linksRef.current, { autoAlpha: 1, display: "flex", x: 0 });
+          gsap.set(burgerRef.current, {
+            autoAlpha: 0,
+            x: 20,
+            rotation: -90,
+            pointerEvents: "none",
+          });
 
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: "body",
-            start: "50px top",
-            end: "300px top",
-            scrub: 1,
-            onLeaveBack: () => setIsMenuOpen(false)
-          }
-        });
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: "body",
+              start: "50px top",
+              end: "300px top",
+              scrub: 1,
+              onLeaveBack: () => setIsMenuOpen(false),
+            },
+          });
 
-        tl.to(linksRef.current, {
-          autoAlpha: 0,
-          x: 50,
-          pointerEvents: "none",
-          duration: 0.5,
-          ease: "power1.in"
-        })
-        .to(burgerRef.current, {
-          autoAlpha: 1,
-          x: 0,
-          rotation: 0,
-          pointerEvents: "auto",
-          duration: 0.5,
-          ease: "power1.out"
-        }, ">");
-      }
-    });
+          tl.to(linksRef.current, {
+            autoAlpha: 0,
+            x: 50,
+            pointerEvents: "none",
+            duration: 0.5,
+            ease: "power1.in",
+          }).to(
+            burgerRef.current,
+            {
+              autoAlpha: 1,
+              x: 0,
+              rotation: 0,
+              pointerEvents: "auto",
+              duration: 0.5,
+              ease: "power1.out",
+            },
+            ">",
+          );
+        }
+      },
+    );
 
     return () => mm.revert();
   }, []);
@@ -143,13 +175,15 @@ const Navbar = ({ startAnimation, lenis }) => {
 
         <div className="nav-controls">
           <ul className="navbar-links" ref={linksRef}>
-            <li onClick={() => scrollToSection('home')}>{t.nav.home}</li>
-            <li onClick={() => scrollToSection('about')}>{t.nav.bio}</li>
-            <li onClick={() => scrollToSection('projects')}>{t.nav.projects}</li>
-            <li onClick={() => scrollToSection('contact')}>{t.nav.contact}</li>
-
-          {/* Selector de idioma */}
-          <LanguageToggle />
+            <li onClick={() => scrollToSection("home")}>{t.nav.home}</li>
+            <li onClick={() => scrollToSection("about")}>{t.nav.bio}</li>
+            <li onClick={() => scrollToSection("projects")}>
+              {t.nav.projects}
+            </li>
+            <li onClick={() => scrollToSection("contact")}>{t.nav.contact}</li>
+            <li className="lang-item">
+              <LanguageToggle />
+            </li>
           </ul>
 
           {/* Botón Hamburguesa */}
@@ -164,19 +198,31 @@ const Navbar = ({ startAnimation, lenis }) => {
       <div className="menu-overlay" ref={menuRef}>
         <div className="menu-content">
           <ul>
-            <li className="menu-link-item" onClick={() => scrollToSection('home')}>
+            <li
+              className="menu-link-item"
+              onClick={() => scrollToSection("home")}
+            >
               <span className="number">01</span>
               <span className="link-text">{t.nav.home}</span>
             </li>
-            <li className="menu-link-item" onClick={() => scrollToSection('about')}>
+            <li
+              className="menu-link-item"
+              onClick={() => scrollToSection("about")}
+            >
               <span className="number">02</span>
               <span className="link-text">{t.nav.bio}</span>
             </li>
-            <li className="menu-link-item" onClick={() => scrollToSection('projects')}>
+            <li
+              className="menu-link-item"
+              onClick={() => scrollToSection("projects")}
+            >
               <span className="number">03</span>
               <span className="link-text">{t.nav.projects}</span>
             </li>
-            <li className="menu-link-item" onClick={() => scrollToSection('contact')}>
+            <li
+              className="menu-link-item"
+              onClick={() => scrollToSection("contact")}
+            >
               <span className="number">04</span>
               <span className="link-text">{t.nav.contact}</span>
             </li>

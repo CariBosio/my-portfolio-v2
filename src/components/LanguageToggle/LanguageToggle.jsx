@@ -1,4 +1,4 @@
-// src/components/LanguageToggle.jsx
+// src/components/LanguageToggle/LanguageToggle.jsx
 import React from "react";
 import { useLanguage } from "../../context/useLanguage";
 import "./LanguageToggle.scss";
@@ -7,7 +7,7 @@ export default function LanguageToggle() {
   const { language, setLanguage } = useLanguage();
 
   return (
-    <div className="lang-toggle" role="group" aria-label="Selector de idioma">
+    <div className="lang-toggle" role="group" aria-label="Language selector">
       <button
         type="button"
         className={`lang-btn ${language === "es" ? "active" : ""}`}
@@ -15,7 +15,7 @@ export default function LanguageToggle() {
       >
         ES
       </button>
-      <span className="lang-separator">/</span>
+      <span className="lang-divider">/</span>
       <button
         type="button"
         className={`lang-btn ${language === "en" ? "active" : ""}`}
